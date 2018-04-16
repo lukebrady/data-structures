@@ -19,10 +19,12 @@ type Tree struct {
 }
 
 // NewTree creates a new tree and returns it.
-func (t *Tree) NewTree(secrets string) {
-	t.depth = 0
-	t.secret = secrets
-	t.root = nil
+func NewTree(secrets string) *Tree {
+	return &Tree{
+		depth:  0,
+		secret: secrets,
+		root:   nil,
+	}
 }
 
 // AddNode adds an int node to the root.
@@ -54,8 +56,7 @@ func (t *Tree) GetDepth() int {
 }
 
 func main() {
-	tree := &Tree{}
-	tree.NewTree("Test")
+	tree := NewTree("Test")
 	tree.AddNode(5)
 	tree.AddNode(6)
 	tree.AddNode(2)
