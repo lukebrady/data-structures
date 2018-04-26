@@ -41,5 +41,7 @@ func main() {
 	graph.AddNode(0, 1)
 	graph.AddNode(1, 2)
 	graph.AddNode(2, 0)
+	graph.AddNode(1, 3)
+	graph.AddNode(3, 4)
 	graph.PrintGraph()
 }
