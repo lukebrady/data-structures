@@ -60,6 +60,8 @@ func main() {
 	stack.push(15)
 	stack.push(25)
 	stack.push(36)
+	stack.push(45)
+	stack.push(56)
 	stack.print()
 	stack.pop()
 	stack.pop()
