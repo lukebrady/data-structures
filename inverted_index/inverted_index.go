@@ -108,6 +108,7 @@ func (i *InvertedIndex) SearchByKey(key string) {
 
 // PrintIndex prints the given key's index.
 func (i *InvertedIndex) PrintIndex() {
+	// Print the entire index. Will only print keys and ValueNode address.
 	fmt.Println(i.index)
 }
 
