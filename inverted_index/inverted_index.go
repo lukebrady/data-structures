@@ -11,15 +11,21 @@ import (
 
 // InvertedIndex struct
 type InvertedIndex struct {
-	index map[string]string
+	index map[string]*ValueNode
 	mutex *sync.Mutex
 	size  uint
+}
+
+// ValueNode struct
+type ValueNode struct {
+	value string
+	next  *ValueNode
 }
 
 // NewIndex returns a pointer to an Inverted Index object.
 func NewIndex() *InvertedIndex {
 	// Make a new map that can be given to the InvertedIndex.
-	ind := make(map[string]string)
+	ind := make(map[string]*ValueNode)
 	return &InvertedIndex{
 		index: ind,
 		mutex: &sync.Mutex{},
@@ -48,9 +54,30 @@ func (i *InvertedIndex) IndexFile(file string) error {
 	// Enter all of the values found in the file into the index.
 	i.mutex.Lock()
 	for _, word := range str {
-		i.index[word] = file
-		// Increase the size count of the index.
-		i.size++
+		if i.index[word] == nil {
+			val := &ValueNode{
+				value: file,
+				next:  nil,
+			}
+			i.index[word] = val
+			// Increase the size count of the index.
+			i.size++
+		} else {
+			// Create the value node that will be inserted into the chain.
+			val := &ValueNode{
+				value: file,
+				next:  nil,
+			}
+			// Assign the root value to the first value node.
+			place := i.index[word]
+			for place.next != nil {
+				place = place.next
+			}
+			// Place the value node when .next == nil.
+			place.next = val
+			// Increase size of the total inverse index.
+			i.size++
+		}
 	}
 	i.mutex.Unlock()
 	// Return nil if no error occurs.
@@ -62,9 +89,27 @@ func (i *InvertedIndex) PrintIndex() {
 	fmt.Println(i.index)
 }
 
+// PrintByKey prints a key's entire chain.
+func (i *InvertedIndex) PrintByKey(key string) {
+	fmt.Printf("%s:\n", key)
+	if i.index[key] != nil {
+		place := i.index[key]
+		for place != nil {
+			fmt.Printf("%s\n", place.value)
+			place = place.next
+		}
+	} else {
+		fmt.Println("This key has no entries in the index.")
+	}
+}
+
 func main() {
 	i := NewIndex()
 	i.IndexFile("./test.txt")
 	i.IndexFile("./test.1.txt")
+	i.IndexFile("./test.2.txt")
 	i.PrintIndex()
+	i.PrintByKey("Hello")
+	i.PrintByKey("Yo")
+	i.PrintByKey("name")
 }
