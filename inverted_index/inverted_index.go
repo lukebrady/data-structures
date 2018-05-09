@@ -84,6 +84,24 @@ func (i *InvertedIndex) IndexFile(file string) error {
 	return nil
 }
 
+// SearchByKey searches all indexed documents for the provided key and prints where
+// the word occurs within that document.
+func (i *InvertedIndex) SearchByKey(key string) {
+	// Assign the root value to the first value node.
+	place := i.index[key]
+	for place != nil {
+		document, err := ioutil.ReadFile(place.value)
+		if err != nil {
+			println(err)
+		}
+		// After Reading in the document, print to STDOUT.
+		fmt.Printf("Found %s in %s:\n%s\n", key, place.value, string(document))
+		place = place.next
+	}
+	// Increase size of the total inverse index.
+	i.size++
+}
+
 // PrintIndex prints the given key's index.
 func (i *InvertedIndex) PrintIndex() {
 	fmt.Println(i.index)
@@ -108,10 +126,5 @@ func main() {
 	i.IndexFile("./test.txt")
 	i.IndexFile("./test.1.txt")
 	i.IndexFile("./test.2.txt")
-	i.PrintIndex()
-	i.PrintByKey("Hello")
-	i.PrintByKey("are")
-	i.PrintByKey("Yo")
-	i.PrintByKey("How")
-	i.PrintByKey("name")
+	i.SearchByKey("Hello")
 }
