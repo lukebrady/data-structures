@@ -46,7 +46,7 @@ func (i *InvertedIndex) IndexFile(file string) error {
 		return err
 	}
 	// Remove all punctuation from the file.
-	premove := re.ReplaceAllString(string(fopen), "")
+	premove := re.ReplaceAllString(string(fopen), " ")
 	// Split all of the strings within the file.
 	str := strings.Split(premove, " ")
 	// Now sort all of the words within the file.
@@ -110,6 +110,8 @@ func main() {
 	i.IndexFile("./test.2.txt")
 	i.PrintIndex()
 	i.PrintByKey("Hello")
+	i.PrintByKey("are")
 	i.PrintByKey("Yo")
+	i.PrintByKey("How")
 	i.PrintByKey("name")
 }
