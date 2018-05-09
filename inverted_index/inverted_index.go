@@ -7,6 +7,8 @@ import (
 	"sort"
 	"strings"
 	"sync"
+
+	"github.com/fatih/color"
 )
 
 // InvertedIndex struct
@@ -19,6 +21,7 @@ type InvertedIndex struct {
 // ValueNode struct
 type ValueNode struct {
 	value string
+	index int
 	next  *ValueNode
 }
 
@@ -53,10 +56,11 @@ func (i *InvertedIndex) IndexFile(file string) error {
 	sort.Strings(str)
 	// Enter all of the values found in the file into the index.
 	i.mutex.Lock()
-	for _, word := range str {
+	for index, word := range str {
 		if i.index[word] == nil {
 			val := &ValueNode{
 				value: file,
+				index: index,
 				next:  nil,
 			}
 			i.index[word] = val
@@ -95,8 +99,19 @@ func (i *InvertedIndex) SearchByKey(key string) {
 			if err != nil {
 				println(err)
 			}
+			str := strings.Split(string(document), " ")
+			// Create a color print function.
+			cyan := color.New(color.FgCyan).PrintfFunc()
 			// After Reading in the document, print to STDOUT.
-			fmt.Printf("Found %s in %s:\n%s\n", key, place.value, string(document))
+			for _, keyword := range str {
+				// If the keyword matches the key, print the word out.
+				if key == keyword {
+					cyan(" %s ", keyword)
+				} else {
+					fmt.Printf(" %s ", keyword)
+				}
+			}
+			fmt.Println()
 			place = place.next
 		}
 		// Increase size of the total inverse index.
@@ -132,5 +147,5 @@ func main() {
 	i.IndexFile("./test.1.txt")
 	i.IndexFile("./test.2.txt")
 	i.IndexFile("./inverted_index.go")
-	i.SearchByKey("Hello")
+	i.SearchByKey("are")
 }
