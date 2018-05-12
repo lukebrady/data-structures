@@ -102,6 +102,8 @@ func (i *InvertedIndex) SearchByKey(key string) {
 			str := strings.Split(string(document), " ")
 			// Create a color print function.
 			cyan := color.New(color.FgCyan).PrintfFunc()
+			// Print out the document where the word was found.
+			fmt.Printf("\"%s\" found in %s.\n", key, place.value)
 			// After Reading in the document, print to STDOUT.
 			for _, keyword := range str {
 				// If the keyword matches the key, print the word out.
@@ -142,10 +144,11 @@ func (i *InvertedIndex) PrintByKey(key string) {
 }
 
 func main() {
+	color.Cyan(" Go Search - Search through indexed documents")
+	color.Cyan("----------------------------------------------")
 	i := NewIndex()
-	i.IndexFile("./test.txt")
-	i.IndexFile("./test.1.txt")
-	i.IndexFile("./test.2.txt")
-	i.IndexFile("./inverted_index.go")
-	i.SearchByKey("are")
+	i.IndexFile("./kayla.txt")
+	i.SearchByKey("Kayla")
+	i.SearchByKey("is")
+	i.SearchByKey("the")
 }
